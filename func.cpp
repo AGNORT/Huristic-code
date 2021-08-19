@@ -2,53 +2,57 @@
 
 using namespace std;
 
+#include "header.h"
+
+using namespace std;
+
 ofstream outPf;
 
-/*********************************å‚æ•°å®šä¹‰****************************************/
-int cusNum;			//å®¢æˆ·ç‚¹æ•°ç›®
-int pointNum;		//æ‰€æœ‰èŠ‚ç‚¹çš„æ•°ç›®
-int carNum;			//å¡è½¦æ•°ç›®
-float Q;			//å¡è½¦é¢å®šè½½é‡é‡
-float alpha;		//å¡è½¦å®è½½ç‡
-float C;			//å¡è½¦è¡Œé©¶çš„å˜åŠ¨æˆæœ¬
-float V;			//å¡è½¦è¡Œé©¶çš„é€Ÿåº¦
-float M;			//ä¸€ä¸ªè¶³å¤Ÿå¤§çš„å¸¸æ•°
-float tau;			//æƒ©ç½šæˆæœ¬ç³»æ•°
+/*********************************²ÎÊı¶¨Òå****************************************/
+int cusNum;			//¿Í»§µãÊıÄ¿
+int pointNum;		//ËùÓĞ½ÚµãµÄÊıÄ¿
+int carNum;			//¿¨³µÊıÄ¿
+float Q;			//¿¨³µ¶î¶¨ÔØÖØÁ¿
+float alpha;		//¿¨³µÊµÔØÂÊ
+float C;			//¿¨³µĞĞÊ»µÄ±ä¶¯³É±¾
+float V;			//¿¨³µĞĞÊ»µÄËÙ¶È
+float M;			//Ò»¸ö×ã¹»´óµÄ³£Êı
+float tau;			//³Í·£³É±¾ÏµÊı
 
-/**********************************é›†åˆå®šä¹‰***************************************/
-vector<float> q(pointNum);		//å®¢æˆ·ç‚¹çš„éœ€æ±‚é‡
-vector<float> s(pointNum);		//å®¢æˆ·ç‚¹çš„æœåŠ¡æ—¶é—´
-vector<float> e(pointNum);		//å®¢æˆ·ç‚¹çš„æ—©æ—¶é—´çª—
-vector<float> l(pointNum);		//å®¢æˆ·ç‚¹çš„æ™šæ—¶é—´çª—
-vector<vector<float>> Dis(pointNum, vector<float>(pointNum, 0));		//å®¢æˆ·ç‚¹ä¹‹é—´çš„è·ç¦»çŸ©é˜µ
+/**********************************¼¯ºÏ¶¨Òå***************************************/
+vector<float> q(pointNum);		//¿Í»§µãµÄĞèÇóÁ¿
+vector<float> s(pointNum);		//¿Í»§µãµÄ·şÎñÊ±¼ä
+vector<float> e(pointNum);		//¿Í»§µãµÄÔçÊ±¼ä´°
+vector<float> l(pointNum);		//¿Í»§µãµÄÍíÊ±¼ä´°
+vector<vector<float>> Dis(pointNum, vector<float>(pointNum, 0));		//¿Í»§µãÖ®¼äµÄ¾àÀë¾ØÕó
 
-/******************************æœ€ä¼˜è§£ç›¸å…³å®šä¹‰************************************/
-vector<VRut> Solution;			//è§£æ–¹æ¡ˆ
+/******************************×îÓÅ½âÏà¹Ø¶¨Òå************************************/
+vector<VRut> Solution;			//½â·½°¸
 
-/******************************TSç›¸å…³å®šä¹‰************************************/
-vector<vector<int>> Tabu;		//è®¾ç½®ç¦å¿Œè¡¨
+/******************************TSÏà¹Ø¶¨Òå************************************/
+//vector<vector<int>> Tabu;		//ÉèÖÃ½û¼É±í
 
-float GBestCost = 0;				//è®°å½•å…¨å±€æœ€ä¼˜è§£
+float GBestCost = 0;				//¼ÇÂ¼È«¾Ö×îÓÅ½â
 
-//è¯»å–æ•°æ®
+//¶ÁÈ¡Êı¾İ
 void ReadData()
 {
-	ifstream inPut("E:/æ¡Œé¢æ–‡ä»¶/ç ”ç©¶ç”Ÿ/ç²¾ç¡®ç®—æ³•/VRPTW_BCP/é™ˆå¸ˆå§ç®—ä¾‹/r111-25.txt");
-	outPf.open("E:/æ¡Œé¢æ–‡ä»¶/ç ”ç©¶ç”Ÿ/ç²¾ç¡®ç®—æ³•/VRPTW_BCP/è¾“å‡ºæ–‡ä»¶/r111-25.txt");
-	//ifstream inPut("E:/æ¡Œé¢æ–‡ä»¶/ç ”ç©¶ç”Ÿ/ç²¾ç¡®ç®—æ³•/VRPTW_BCP/æµ‹è¯•ç®—ä¾‹/VRPTW_18.txt");
-	//outPf.open("E:/æ¡Œé¢æ–‡ä»¶/ç ”ç©¶ç”Ÿ/ç²¾ç¡®ç®—æ³•/VRPTW_BCP/è¾“å‡ºæ–‡ä»¶/VRPTW-18.txt");
+	ifstream inPut("E:/×ÀÃæÎÄ¼ş/ÑĞ¾¿Éú/¾«È·Ëã·¨/VRPTW_BCP/³ÂÊ¦½ãËãÀı/r111-25.txt");
+	outPf.open("E:/×ÀÃæÎÄ¼ş/ÑĞ¾¿Éú/¾«È·Ëã·¨/VRPTW_BCP/Êä³öÎÄ¼ş/r111-25.txt");
+	//ifstream inPut("E:/×ÀÃæÎÄ¼ş/ÑĞ¾¿Éú/¾«È·Ëã·¨/VRPTW_BCP/²âÊÔËãÀı/VRPTW_18.txt");
+	//outPf.open("E:/×ÀÃæÎÄ¼ş/ÑĞ¾¿Éú/¾«È·Ëã·¨/VRPTW_BCP/Êä³öÎÄ¼ş/VRPTW-18.txt");
 	if (!inPut.is_open())
 	{
-		cerr << "è¯»å…¥æ–‡ä»¶æ‰“å¼€æ–‡ä»¶å¤±è´¥ï¼" << endl;
+		cerr << "¶ÁÈëÎÄ¼ş´ò¿ªÎÄ¼şÊ§°Ü£¡" << endl;
 		exit(1);
 	}
 	if (!outPf.is_open())
 	{
-		cerr << "è¾“å‡ºæ–‡ä»¶æ‰“å¼€å¤±è´¥ï¼" << endl;
+		cerr << "Êä³öÎÄ¼ş´ò¿ªÊ§°Ü£¡" << endl;
 		exit(1);
 	}
 
-	//å¯¼å…¥å‚æ•°ä¿¡æ¯
+	//µ¼Èë²ÎÊıĞÅÏ¢
 	inPut >> cusNum >> carNum >> Q >> alpha >> C >> V >> M >> tau;
 	pointNum = cusNum + 1;
 	q.resize(pointNum, 0); s.resize(pointNum, 0); e.resize(pointNum, 0); l.resize(pointNum, 0); Dis.resize(pointNum);
@@ -70,16 +74,16 @@ void ReadData()
 	inPut.close();
 }
 
-//åˆ›å»ºåˆå§‹è§£
+//´´½¨³õÊ¼½â
 void CrtInitSol()
-{//ä½¿ç”¨é¡ºåºæ’å…¥çš„æ–¹æ³•ç”Ÿæˆåˆå§‹è§£
+{//Ê¹ÓÃË³Ğò²åÈëµÄ·½·¨Éú³É³õÊ¼½â
 	int j = 1;
 	for (int i = 0; i < carNum; ++i)
 	{
-		VRut vR;				//æ–°å»ºä¸€æ¡è·¯å¾„
+		VRut vR;				//ĞÂ½¨Ò»ÌõÂ·¾¶
 		for (; j <= cusNum; ++j)
 		{
-			//åˆ¤æ–­è·¯å¾„å¯è¡Œæ€§
+			//ÅĞ¶ÏÂ·¾¶¿ÉĞĞĞÔ
 			if (!JgeRutValy(j, (int)vR.Ruts.size(), vR))
 			{
 				BackToDpt(vR, j);
@@ -87,7 +91,7 @@ void CrtInitSol()
 			}
 			else
 			{
-				vR.Cost += Dis[j-1][j];
+				vR.Cost += Dis[j - 1][j];
 				vR.Ruts.push_back(j);
 				vR.Loads += q[j];
 			}
@@ -98,7 +102,7 @@ void CrtInitSol()
 			if (BackToDpt(vR, j))
 			{
 				Solution.push_back(vR);
-				break;//èƒ½è¿”å›åœºç«™åˆ™åˆå§‹è§£ç”Ÿæˆå®Œæ¯•ï¼Œå¦åˆ™å°†æœ€åä¸€ä¸ªå®¢æˆ·ç‚¹é‡æ–°ç”Ÿæˆä¸€æ¡è·¯å¾„
+				break;//ÄÜ·µ»Ø³¡Õ¾Ôò³õÊ¼½âÉú³ÉÍê±Ï£¬·ñÔò½«×îºóÒ»¸ö¿Í»§µãÖØĞÂÉú³ÉÒ»ÌõÂ·¾¶
 			}
 		}
 		Solution.push_back(vR);
@@ -106,59 +110,59 @@ void CrtInitSol()
 
 }
 
-//åˆ¤æ–­è½¦è¾†èƒ½å¦è¿”å›åœºç«™
+//ÅĞ¶Ï³µÁ¾ÄÜ·ñ·µ»Ø³¡Õ¾
 bool BackToDpt(VRut &vR, int &j)
-{//è®©è½¦è¾†è¿”å›åœºç«™
+{//ÈÃ³µÁ¾·µ»Ø³¡Õ¾
 	float atTime = vR.AtTimes.back() + s[vR.Ruts.back()] + Dis[vR.Ruts.back()][0] / V;
 	if (atTime < l[0])
-	{//è½¦è¾†å¯ä»¥è¿”å›åœºç«™
+	{//³µÁ¾¿ÉÒÔ·µ»Ø³¡Õ¾
 		vR.AtTimes.push_back(atTime);
 		vR.Ruts.push_back(0);
-		vR.Cost += Dis[j-1][0];
+		vR.Cost += Dis[j - 1][0];
 		return true;
 	}
 	else
-	{//ä¸èƒ½è¿”å›åœºç«™ï¼Œåˆ™å»æ‰ä¸€ä¸ªå®¢æˆ·ç‚¹ï¼Œä¹‹åå†è¿”å›åœºç«™
+	{//²»ÄÜ·µ»Ø³¡Õ¾£¬ÔòÈ¥µôÒ»¸ö¿Í»§µã£¬Ö®ºóÔÙ·µ»Ø³¡Õ¾
 		vR.Ruts.pop_back();
 		atTime = vR.AtTimes.back() + s[vR.Ruts.back()] + Dis[vR.Ruts.back()][0] / V;
 		vR.AtTimes.push_back(atTime);
 		vR.Ruts.push_back(0);
-		vR.Cost += Dis[j-2][0];
+		vR.Cost += Dis[j - 2][0];
 		--j;
 		return false;
 	}
 }
 
-//å°†æŸä¸€ä¸ªå®¢æˆ·ç‚¹æ’å…¥åˆ°æŸä¸€æ¡è·¯å¾„ä¸­çš„æŸä¸€ä¸ªä½ç½®ï¼Œåˆ¤æ–­è·¯å¾„å¯è¡Œæ€§
+//½«Ä³Ò»¸ö¿Í»§µã²åÈëµ½Ä³Ò»ÌõÂ·¾¶ÖĞµÄÄ³Ò»¸öÎ»ÖÃ£¬ÅĞ¶ÏÂ·¾¶¿ÉĞĞĞÔ
 bool JgeRutValy(int cus, int pos, VRut & vR)
 {
-	//é¦–å…ˆåˆ¤æ–­è½½é‡é‡
+	//Ê×ÏÈÅĞ¶ÏÔØÖØÁ¿
 	float newLoad = vR.Loads + q[cus];
 	if (newLoad > Q) return false;
 
-	//åˆ¤æ–­æ—¶é—´çª—
-	if(!UpDateTime(cus, pos, vR)) return false;
+	//ÅĞ¶ÏÊ±¼ä´°
+	if (!UpDateTime(cus, pos, vR)) return false;
 	return true;
 }
 
-//å°†æŸä¸€ä¸ªå®¢æˆ·ç‚¹æ’å…¥åˆ°æŸä¸€æ¡è·¯å¾„ä¸­çš„æŸä¸€ä¸ªä½ç½®ï¼Œæ›´æ–°æ’å…¥ç‚¹ä¹‹åçš„å®¢æˆ·ç‚¹çš„åˆ°è¾¾æ—¶é—´ï¼Œå¹¶åˆ¤æ–­è·¯å¾„å¯è¡Œæ€§
+//½«Ä³Ò»¸ö¿Í»§µã²åÈëµ½Ä³Ò»ÌõÂ·¾¶ÖĞµÄÄ³Ò»¸öÎ»ÖÃ£¬¸üĞÂ²åÈëµãÖ®ºóµÄ¿Í»§µãµÄµ½´ïÊ±¼ä£¬²¢ÅĞ¶ÏÂ·¾¶¿ÉĞĞĞÔ
 bool UpDateTime(int cus, int pos, VRut & vR)
 {
-	//é¦–å…ˆåˆ¤æ–­æ˜¯å¦ä¼šè¶…è¿‡æ–°æ’å…¥å®¢æˆ·ç‚¹çš„æ™šæ—¶é—´çª—
+	//Ê×ÏÈÅĞ¶ÏÊÇ·ñ»á³¬¹ıĞÂ²åÈë¿Í»§µãµÄÍíÊ±¼ä´°
 	int lastCus = vR.Ruts[pos - 1];
 	float atTime = vR.AtTimes[pos - 1] + s[lastCus] + Dis[lastCus][cus] / V;
-	if (atTime > l[cus]) return false;//è‹¥è¶…è¿‡æ™šæ—¶é—´çª—ï¼Œåˆ™æ— éœ€æ›´æ–°
+	if (atTime > l[cus]) return false;//Èô³¬¹ıÍíÊ±¼ä´°£¬ÔòÎŞĞè¸üĞÂ
 
-	atTime = max(atTime, e[cus]);	  //ä¸è€ƒè™‘ç­‰å¾…æ—¶é—´æˆæœ¬ï¼Œè½¦è¾†èƒ½å¤Ÿä¸è¶…è¿‡æ™šæ—¶é—´çª—åˆ°è¾¾å°±è¡Œ
+	atTime = max(atTime, e[cus]);	  //²»¿¼ÂÇµÈ´ıÊ±¼ä³É±¾£¬³µÁ¾ÄÜ¹»²»³¬¹ıÍíÊ±¼ä´°µ½´ï¾ÍĞĞ
 
-	//è‹¥æ˜¯æ’å…¥åˆ°å°¾éƒ¨ï¼Œåˆ™ç›´æ¥æ›´æ–°æ–°å®¢æˆ·ç‚¹çš„åˆ°è¾¾æ—¶é—´
+	//ÈôÊÇ²åÈëµ½Î²²¿£¬ÔòÖ±½Ó¸üĞÂĞÂ¿Í»§µãµÄµ½´ïÊ±¼ä
 	if (pos == (int)vR.AtTimes.size())
 	{
 		vR.AtTimes.push_back(atTime);
 		return true;
 	}
 	else
-	{//æ’å…¥åˆ°è·¯å¾„ä¸­é—´çš„æƒ…å†µ,ä½¿ç”¨é€’å½’è¿›è¡Œè®¡ç®—
+	{//²åÈëµ½Â·¾¶ÖĞ¼äµÄÇé¿ö,Ê¹ÓÃµİ¹é½øĞĞ¼ÆËã
 		if (vR.Ruts[pos] != cus)
 		{
 			vR.Ruts.insert(vR.Ruts.begin() + pos, cus);
@@ -166,246 +170,89 @@ bool UpDateTime(int cus, int pos, VRut & vR)
 		}
 		else
 			vR.AtTimes[pos] = atTime;
-		//æ›´æ–°åç»­å®¢æˆ·ç‚¹çš„åˆ°è¾¾æ—¶é—´
+		//¸üĞÂºóĞø¿Í»§µãµÄµ½´ïÊ±¼ä
 		int i = pos + 1;
 
 		if (i == vR.Ruts.size())
 			return true;
-		
-		if(!UpDateTime(vR.Ruts[i], i, vR))		//é€’å½’è®¡ç®—
-			return false;					
+
+		if (!UpDateTime(vR.Ruts[i], i, vR))		//µİ¹é¼ÆËã
+			return false;
 
 		return true;
 	}
 }
 
-//ä»»æ„é€‰æ‹©ä¸€æ¡è·¯å¾„ä¸­çš„ä»»æ„ä¸€ä¸ªå®¢æˆ·ç‚¹
-int ChosOneCus()
+//ÈÎÒâÑ¡ÔñÒ»ÌõÂ·¾¶ÖĞµÄÈÎÒâÒ»¸ö¿Í»§µã
+int ChosOneCus(vector<VRut> &resSolution)
 {
-	int rIdx = rand() % (int)Solution.size(),						//éšæœºé€‰æ‹©ä¸€æ¡è·¯å¾„
-		cIdx = (rand() % ((int)Solution[rIdx].Ruts.size() - 2)) + 1,//éšæœºé€‰æ‹©ä¸€ä¸ªéåœºç«™çš„å®¢æˆ·ç‚¹
-		objCus = Solution[rIdx].Ruts[cIdx];
+	int rIdx = rand() % (int)resSolution.size(),						//Ëæ»úÑ¡ÔñÒ»ÌõÂ·¾¶
+		cIdx = (rand() % ((int)resSolution[rIdx].Ruts.size() - 2)) + 1,//Ëæ»úÑ¡ÔñÒ»¸ö·Ç³¡Õ¾µÄ¿Í»§µã
+		objCus = resSolution[rIdx].Ruts[cIdx];
 
-	//æ›´æ–°ç¦å¿Œè¡¨
-	if (Tabu.size() == MAXTABU)
-		Tabu.erase(Tabu.begin());
-	Tabu.push_back({ rIdx, Solution[rIdx].Ruts[cIdx] });			//å“ªæ¡è·¯å¾„ä¸­çš„æŸé€‰ä¸­çš„å®¢æˆ·ç‚¹
+	////¸üĞÂ½û¼É±í
+	//if (Tabu.size() == MAXTABU)
+	//	Tabu.erase(Tabu.begin());
+	//Tabu.push_back({ rIdx, Solution[rIdx].Ruts[cIdx] });			//ÄÄÌõÂ·¾¶ÖĞµÄÄ³Ñ¡ÖĞµÄ¿Í»§µã
 
 
-	Solution[rIdx].Ruts.erase(Solution[rIdx].Ruts.begin() + cIdx);		//å°†é€‰ä¸­çš„å®¢æˆ·ç‚¹åˆ æ‰
-	Solution[rIdx].AtTimes.erase(Solution[rIdx].AtTimes.begin() + cIdx);//å°†å¯¹åº”çš„åˆ°è¾¾æ—¶é—´åˆ é™¤
-	if (Solution[rIdx].Ruts.size() == 2)								//è‹¥è·¯å¾„ä¸­æ²¡æœ‰å®¢æˆ·ç‚¹äº†ï¼Œåˆ™å°†è·¯å¾„ä¹Ÿåˆ é™¤
+	resSolution[rIdx].Ruts.erase(resSolution[rIdx].Ruts.begin() + cIdx);		//½«Ñ¡ÖĞµÄ¿Í»§µãÉ¾µô
+	resSolution[rIdx].AtTimes.erase(resSolution[rIdx].AtTimes.begin() + cIdx);//½«¶ÔÓ¦µÄµ½´ïÊ±¼äÉ¾³ı
+	if (resSolution[rIdx].Ruts.size() == 2)								//ÈôÂ·¾¶ÖĞÃ»ÓĞ¿Í»§µãÁË£¬Ôò½«Â·¾¶Ò²É¾³ı
 	{
-		//æ›´æ–°ç¦å¿Œè¡¨ä¸­çš„è·¯å¾„ç´¢å¼•
-		for (int i = 0; i < (int)Tabu.size(); ++i)
-		{
-			if (Tabu[i][0] == rIdx)
-				Tabu.erase(Tabu.begin() + i);//åˆ é™¤å¯¹åº”çš„Tabuè®°å½•
-			else if (Tabu[i][0] > rIdx)
-				--Tabu[i][0];				 //é‡åˆ°å¤§äºrIdxçš„è·¯å¾„ç´¢å¼•éœ€è¦è¿›è¡Œé€’å‡
-		}
-		Solution.erase(Solution.begin() + rIdx);
+		////¸üĞÂ½û¼É±íÖĞµÄÂ·¾¶Ë÷Òı
+		//for (int i = 0; i < (int)Tabu.size(); ++i)
+		//{
+		//	if (Tabu[i][0] == rIdx)
+		//		Tabu.erase(Tabu.begin() + i);//É¾³ı¶ÔÓ¦µÄTabu¼ÇÂ¼
+		//	else if (Tabu[i][0] > rIdx)
+		//		--Tabu[i][0];				 //Óöµ½´óÓÚrIdxµÄÂ·¾¶Ë÷ÒıĞèÒª½øĞĞµİ¼õ
+		//}
+
+		resSolution.erase(resSolution.begin() + rIdx);
 
 	}
-	
+
 	return objCus;
 }
 
-//æ’å…¥ä¿¡æ¯ç»“æ„ä½“
+//²åÈëĞÅÏ¢½á¹¹Ìå
 struct InsertInfo
 {
-	float cost; //æ’å…¥æˆæœ¬
-	int rutIdx; //æ’å…¥è·¯å¾„
-	int cusIdx; // æ’å…¥ä½ç½®
-	bool tabuFlag = false;//è®°å½•å½“å‰ä¿®å¤æ–¹å¼æ˜¯å¦è¿åç¦å¿Œè¡¨ï¼Œè‹¥æ˜¯ï¼Œåˆ™ä¸ºtrue
+	float cost; //²åÈë³É±¾
+	int rutIdx; //²åÈëÂ·¾¶
+	int cusIdx; // ²åÈëÎ»ÖÃ
+	bool tabuFlag = false;//¼ÇÂ¼µ±Ç°ĞŞ¸´·½Ê½ÊÇ·ñÎ¥·´½û¼É±í£¬ÈôÊÇ£¬ÔòÎªtrue
 };
 
-//æ’å…¥ä¿¡æ¯ç»“æ„ä½“æ’åº
+//²åÈëĞÅÏ¢½á¹¹ÌåÅÅĞò
 bool Mycomp(InsertInfo &info1, InsertInfo &info2)
 {
 	return info1.cost < info2.cost;
 }
 
-//å°†å®¢æˆ·ç‚¹æ’å…¥è·¯å¾„ä¸­
-void InsertCusToRut(vector<VRut> &tSolution, int preRIdx, int preCusIdx, int cus, const float &preInstCost)
+//Ëæ»ú¼ÓÌ°À·²åÈëĞŞ¸´
+vector<VRut> Insert(int cus, vector<VRut> &resSolution)
 {
-	tSolution[preRIdx].Ruts.insert(tSolution[preRIdx].Ruts.begin() + preCusIdx, cus);
-	tSolution[preRIdx].Loads += q[cus];
-	tSolution[preRIdx].Cost += preInstCost;
-	UpDateTime(cus, preCusIdx, tSolution[preRIdx]);
-}
-
-//éšæœºåŠ è´ªå©ªæ’å…¥ä¿®å¤
-void Insert(int cus)
-{
-	//åœ¨å½“å‰è§£æ–¹æ¡ˆä¸­éšæœºé€‰æ‹©3/5çš„è·¯å¾„è¿›è¡Œè´ªå©ªæ’å…¥å¯¹æ¯”
-	int n = (int)Solution.size();				//å½“å‰è§£æ–¹æ¡ˆçš„è·¯å¾„æ•°
-	int rCnt = (int)floor(5.0*n/5.0);
+	//ÔÚµ±Ç°½â·½°¸ÖĞËæ»úÑ¡Ôñ3/5µÄÂ·¾¶½øĞĞÌ°À·²åÈë¶Ô±È
+	int n = (int)resSolution.size();				//µ±Ç°½â·½°¸µÄÂ·¾¶Êı
+	int rCnt = (int)floor(5.0*n / 5.0);
 	vector<int> rIdx;
 	for (int i = 0; i < n; ++i)
 		rIdx.push_back(i);
 
 	random_device rd;
 	mt19937 engine2(rd());
-	shuffle(rIdx.begin(), rIdx.end(), engine2);		//éšæœºæ‰“ä¹±è§£æ–¹æ¡ˆåºåˆ—
-	
-	//vector<InsertInfo> instInfo;					//è®°å½•æ‰€æœ‰å¯è¡Œçš„æ’å…¥ä½ç½®ä¿¡æ¯
-	//for (int i = 0; i < rCnt; ++i)
-	//{//éå†æ¯ä¸€æ¡è·¯å¾„
-	//	for (int j = 0; j < Solution[i].Ruts.size() - 1; ++j)
-	//	{//éå†æ¯ä¸€ä¸ªæ’å…¥ä½ç½®
-	//		float insertCost = CalCost(cus, j+1, Solution[i]);
-	//		if (insertCost < M)
-	//		{
-	//			instInfo.push_back(InsertInfo());
-	//			instInfo.back().cost = insertCost;
-	//			instInfo.back().rutIdx = i;
-	//			instInfo.back().cusIdx = j + 1;
-	//		}
-	//	}
-	//}
-	////å°†æ’å…¥ä½ç½®ä¿¡æ¯ä»å°åˆ°å¤§æ’åº
-	//sort(instInfo.begin(), instInfo.end(), Mycomp);
-	//int tCnt = (int)instInfo.size();
-
-	/*
-	if (tCnt != 0)
-	{
-		//æ£€æŸ¥å½“å‰æ“ä½œæ˜¯å¦åœ¨ç¦å¿Œè¡¨ä¸­
-		for (int j = 0; j < (int)Tabu.size(); ++j)
-		{
-			int preRIdx = instInfo[0].rutIdx,
-				preCusIdx = instInfo[0].cusIdx;
-			float preInstCost = instInfo[0].cost;
-			if (Tabu[j][0] == preRIdx && Tabu[j][1] == preCusIdx)
-			{
-				instInfo[0].tabuFlag = true;
-
-				//æ£€æŸ¥æ˜¯å¦ç¦å¿Œæ“ä½œå¯ä»¥äº§ç”Ÿä¼˜äºå½“å‰æœ€ä¼˜è§£çš„è§£
-				vector<VRut> tSolution = Solution;	//ä¸´æ—¶è®°å½•æœ€ä¼˜è§£
-
-				InsertCusToRut(tSolution, preRIdx, preCusIdx, cus, preInstCost);
-
-				float currCost = sumCost();	//è®¡ç®—å½“å‰è§£
-				if (currCost < GBestCost)
-				{//è‹¥æ˜¯ï¼Œåˆ™å°†ç¦å¿Œæ“ä½œé‡Šæ”¾ï¼Œå¹¶è®°å½•æœ€ä¼˜è§£
-					Tabu.erase(Tabu.begin() + j);
-					Solution = tSolution;
-					return;
-				}
-				else
-				{
-					CrtNewRut(cus);
-					return;
-				}
-			}
-		}
-		int preRIdx = instInfo[0].rutIdx,
-			preCusIdx = instInfo[0].cusIdx;
-		float preInstCost = instInfo[0].cost;
-		InsertCusToRut(Solution, preRIdx, preCusIdx, cus, preInstCost);
-		return;
-
-	}
-	else
-		CrtNewRut(cus);
-	*/
-	
-	/*
-	if (tCnt != 0)
-	{//éå†æ¯ä¸€ä¸ªæ’å…¥æ–¹å¼ï¼Œå°†å®¢æˆ·ç‚¹æ’å…¥åˆ°è·¯å¾„ä¹‹ä¸­
-		//int calNum = tCnt > 3 ? 3 : tCnt;
-		for (int i = 0; i < tCnt; ++i)
-		{
-			//æ£€æŸ¥å½“å‰æ“ä½œæ˜¯å¦åœ¨ç¦å¿Œè¡¨ä¸­
-			for (int j = 0; j < (int)Tabu.size(); ++j)
-			{
-				int preRIdx = instInfo[i].rutIdx,
-					preCusIdx = instInfo[i].cusIdx;
-				float preInstCost = instInfo[i].cost;
-				if (Tabu[j][0] == preRIdx && Tabu[j][1] == preCusIdx)
-				{
-					instInfo[i].tabuFlag = true;
-
-					//if exceed calNum then just judge if the execution violates the tabu
-					//if (j > calNum) break;
-
-					//æ£€æŸ¥æ˜¯å¦ç¦å¿Œæ“ä½œå¯ä»¥äº§ç”Ÿä¼˜äºå½“å‰æœ€ä¼˜è§£çš„è§£
-					vector<VRut> tSolution = Solution;	//ä¸´æ—¶è®°å½•æœ€ä¼˜è§£
-
-					InsertCusToRut(tSolution, preRIdx, preCusIdx, cus, preInstCost);
-
-					float currCost = sumCost();	//è®¡ç®—å½“å‰è§£
-					if (currCost < GBestCost)
-					{//è‹¥æ˜¯ï¼Œåˆ™å°†ç¦å¿Œæ“ä½œé‡Šæ”¾ï¼Œå¹¶è®°å½•æœ€ä¼˜è§£
-						Tabu.erase(Tabu.begin() + j);
-						Solution = tSolution;
-						return;
-					}
-
-				}
-			}
-			//if (instInfo[i].tabuFlag == false)
-			//{
-			//	int preRIdx = instInfo[i].rutIdx,
-			//		preCusIdx = instInfo[i].cusIdx;
-			//	float preInstCost = instInfo[i].cost;
-			//	InsertCusToRut(Solution, preRIdx, preCusIdx, cus, preInstCost);
-			//	return;
-			//}
-		}
-
-		//è‹¥ä¸åœ¨ç¦å¿Œè¡¨ä¸­ï¼Œåˆ™æŒ‰80%æ¦‚ç‡é€‰æ‹©æœ€å°çš„æˆæœ¬è¿›è¡Œä¿®å¤ï¼ŒæŒ‰ç…§20%é€‰æ‹©æ¬¡å°æˆæœ¬æ–¹å¼è¿›è¡Œä¿®å¤
-		int ratio = rand() % 101;
-		if (ratio <= 90)
-		{//é€‰æ‹©æ²¡è¿åç¦å¿Œè¡¨çš„æœ€å°ä¿®å¤æˆæœ¬è¿›è¡Œæ’å…¥å®¢æˆ·ç‚¹
-			for (int i = 0; i < (int)instInfo.size(); ++i)
-			{
-				if (!instInfo[i].tabuFlag)
-				{
-					int preRIdx = instInfo[i].rutIdx,
-						preCusIdx = instInfo[i].cusIdx;
-					float preInstCost = instInfo[i].cost;
-					InsertCusToRut(Solution, preRIdx, preCusIdx, cus, preInstCost);
-					return;
-				}
-			}
-		}
-		else
-		{//é€‰æ‹©æ²¡è¿åç¦å¿Œè¡¨çš„æ¬¡å°ä¿®å¤æˆæœ¬è¿›è¡Œæ’å…¥å®¢æˆ·ç‚¹
-			int cnt = 0;
-			for (int i = 0; i < (int)instInfo.size(); ++i)
-			{
-				if (!instInfo[i].tabuFlag)
-				{
-					if (!cnt)
-					{
-						++cnt;	//è®¡æ•°å˜é‡ç´¯åŠ 1,é™¤å»æœ€å°æ’å…¥æˆæœ¬
-						continue;
-					}
-					int preRIdx = instInfo[i].rutIdx,
-						preCusIdx = instInfo[i].cusIdx;
-					float preInstCost = instInfo[i].cost;
-					InsertCusToRut(Solution, preRIdx, preCusIdx, cus, preInstCost);
-					return;
-				}
-			}
-		}
-		//è‹¥æ‰€æœ‰çš„æ’å…¥æ–¹å¼å‡è¿åäº†ç¦å¿Œè§„åˆ™ä¸”æ²¡æœ‰äº§ç”Ÿæ›´ä¼˜çš„è§£ï¼Œåˆ™æ–°å»ºä¸€æ¡è·¯å¾„
-		CrtNewRut(cus);
-	}
-	else//æ–°å»ºä¸€æ¡è·¯å¾„
-		CrtNewRut(cus);
-		*/
+	shuffle(rIdx.begin(), rIdx.end(), engine2);		//Ëæ»ú´òÂÒ½â·½°¸ĞòÁĞ
 
 	int bestRIdx = -1,
 		bestCIdx = -1;
 	float bestCost = M;
 	for (int i = 0; i < rCnt; ++i)
-	{//éå†æ¯ä¸€æ¡è·¯å¾„
-		for (int j = 0; j < Solution[i].Ruts.size() - 1; ++j)
-		{//éå†æ¯ä¸€ä¸ªæ’å…¥ä½ç½®
-			float insertCost = CalCost(cus, j + 1, Solution[i]);
+	{//±éÀúÃ¿Ò»ÌõÂ·¾¶
+		for (int j = 0; j < (int)resSolution[i].Ruts.size() - 1; ++j)
+		{//±éÀúÃ¿Ò»¸ö²åÈëÎ»ÖÃ
+			float insertCost = CalCost(cus, j + 1, resSolution[i]);
 			if (insertCost < bestCost)
 			{
 				bestCost = insertCost;
@@ -414,93 +261,95 @@ void Insert(int cus)
 			}
 		}
 	}
-	//å°†å®¢æˆ·ç‚¹æ’å…¥åˆ°æœ€ä¼˜è·¯å¾„çš„æœ€ä¼˜ä½ç½®
+	//½«¿Í»§µã²åÈëµ½×îÓÅÂ·¾¶µÄ×îÓÅÎ»ÖÃ
 	if (bestRIdx != -1)
-	{//è‹¥èƒ½å¤Ÿæ‰¾åˆ°æŸæ¡è·¯å¾„è¿›è¡Œæ’å…¥
-		//æ£€æŸ¥å½“å‰æ“ä½œæ˜¯å¦åœ¨ç¦å¿Œè¡¨ä¸­
-		for (int i = 0; i < (int)Tabu.size(); ++i)
-		{
-			if (Tabu[i][0] == bestRIdx && Tabu[i][1] == cus)
-			{
-				//æ£€æŸ¥æ˜¯å¦ç¦å¿Œæ“ä½œå¯ä»¥äº§ç”Ÿä¼˜äºå½“å‰æœ€ä¼˜è§£çš„è§£
-				vector<VRut> tSolution = Solution;	//ä¸´æ—¶è®°å½•æœ€ä¼˜è§£
-				tSolution[bestRIdx].Ruts.insert(tSolution[bestRIdx].Ruts.begin() + bestCIdx, cus);
-				tSolution[bestRIdx].Loads += q[cus];
-				tSolution[bestRIdx].Cost += bestCost;
-				UpDateTime(cus, bestCIdx, tSolution[bestRIdx]);
-				float currCost = sumCost();	//è®¡ç®—å½“å‰è§£
-				if (currCost < GBestCost)
-				{//è‹¥æ˜¯ï¼Œåˆ™å°†ç¦å¿Œæ“ä½œé‡Šæ”¾ï¼Œå¹¶è®°å½•æœ€ä¼˜è§£
-					Tabu.erase(Tabu.begin() + i);
-					Solution = tSolution;
-					return;
-				}
-				else
-				{//è‹¥ä¸æ˜¯ï¼Œåˆ™é€‰æ‹©ä¸€æ¡ç¦å¿Œè¡¨ä¹‹å¤–çš„è·¯å¾„ï¼Œå°†å®¢æˆ·ç‚¹éšæœºæ’å…¥
-					CrtNewRut(cus);
-					return;
-				}
-			}
-		}
-		//è‹¥æ“ä½œä¸åœ¨ç¦å¿Œè¡¨ä¸­
-		Solution[bestRIdx].Ruts.insert(Solution[bestRIdx].Ruts.begin() + bestCIdx, cus);
-		Solution[bestRIdx].Loads += q[cus];
-		Solution[bestRIdx].Cost += bestCost;
-		UpDateTime(cus, bestCIdx, Solution[bestRIdx]);
+	{//ÈôÄÜ¹»ÕÒµ½Ä³ÌõÂ·¾¶½øĞĞ²åÈë
+
+		////¼ì²éµ±Ç°²Ù×÷ÊÇ·ñÔÚ½û¼É±íÖĞ
+		//for (int i = 0; i < (int)Tabu.size(); ++i)
+		//{
+		//	if (Tabu[i][0] == bestRIdx && Tabu[i][1] == cus)
+		//	{
+		//		//¼ì²éÊÇ·ñ½û¼É²Ù×÷¿ÉÒÔ²úÉúÓÅÓÚµ±Ç°×îÓÅ½âµÄ½â
+		//		vector<VRut> tSolution = Solution;	//ÁÙÊ±¼ÇÂ¼×îÓÅ½â
+		//		tSolution[bestRIdx].Ruts.insert(tSolution[bestRIdx].Ruts.begin() + bestCIdx, cus);
+		//		tSolution[bestRIdx].Loads += q[cus];
+		//		tSolution[bestRIdx].Cost += bestCost;
+		//		UpDateTime(cus, bestCIdx, tSolution[bestRIdx]);
+		//		float currCost = sumCost();	//¼ÆËãµ±Ç°½â
+		//		if (currCost < GBestCost)
+		//		{//ÈôÊÇ£¬Ôò½«½û¼É²Ù×÷ÊÍ·Å£¬²¢¼ÇÂ¼×îÓÅ½â
+		//			Tabu.erase(Tabu.begin() + i);
+		//			Solution = tSolution;
+		//			return;
+		//		}
+		//		else
+		//		{//Èô²»ÊÇ£¬ÔòÑ¡ÔñÒ»Ìõ½û¼É±íÖ®ÍâµÄÂ·¾¶£¬½«¿Í»§µãËæ»ú²åÈë
+		//			CrtNewRut(cus);
+		//			return;
+		//		}
+		//	}
+		//}
+		//Èô²Ù×÷²»ÔÚ½û¼É±íÖĞ
+		resSolution[bestRIdx].Ruts.insert(resSolution[bestRIdx].Ruts.begin() + bestCIdx, cus);
+		resSolution[bestRIdx].Loads += q[cus];
+		resSolution[bestRIdx].Cost += bestCost;
+		UpDateTime(cus, bestCIdx, resSolution[bestRIdx]);
 	}
-	else//æ–°å»ºä¸€æ¡è·¯å¾„
-		CrtNewRut(cus);
+	else//ĞÂ½¨Ò»ÌõÂ·¾¶
+		CrtNewRut(cus, resSolution);
+	return resSolution;
 }
 
-//è®¡ç®—å°†å®¢æˆ·ç‚¹æ’å…¥åˆ°æŸæ¡è·¯å¾„çš„æŸä¸ªä½ç½®çš„å˜åŠ¨æˆæœ¬
+//¼ÆËã½«¿Í»§µã²åÈëµ½Ä³ÌõÂ·¾¶µÄÄ³¸öÎ»ÖÃµÄ±ä¶¯³É±¾
 float CalCost(int cus, int pos, VRut &vR)
 {
-	//é¦–å…ˆåˆ¤æ–­è½½é‡é‡
+	//Ê×ÏÈÅĞ¶ÏÔØÖØÁ¿
 	float newLoad = vR.Loads + q[cus];
-	if (newLoad > Q) return M;					//è·¯å¾„ä¸å¯è¡Œï¼Œå˜åŠ¨æˆæœ¬è®¾ä¸ºæå¤§å€¼
+	if (newLoad > Q) return M;					//Â·¾¶²»¿ÉĞĞ£¬±ä¶¯³É±¾ÉèÎª¼«´óÖµ
 
-	//åˆ¤æ–­æ—¶é—´çª—
+	//ÅĞ¶ÏÊ±¼ä´°
 	VRut tvR = vR;
-	if (!UpDateTime(cus, pos, tvR)) return M;	//è·¯å¾„ä¸å¯è¡Œï¼Œå˜åŠ¨æˆæœ¬è®¾ä¸ºæå¤§å€¼
+	if (!UpDateTime(cus, pos, tvR)) return M;	//Â·¾¶²»¿ÉĞĞ£¬±ä¶¯³É±¾ÉèÎª¼«´óÖµ
 
-	//è®¡ç®—å˜åŠ¨æˆæœ¬	
-	int pCus = vR.Ruts[pos - 1],						//è®°å½•æ’å…¥ç‚¹ä¹‹å‰çš„å®¢æˆ·ç‚¹
-		fCus = vR.Ruts[pos];							//è®°å½•æ’å…¥ç‚¹ä¹‹åçš„å®¢æˆ·ç‚¹
-	float oCost = Dis[pCus][fCus],								//è®°å½•è·¯å¾„ä¹‹å‰çš„æˆæœ¬
-		vCost = Dis[pCus][cus] + Dis[cus][fCus] - oCost;//è®°å½•å˜åŠ¨æˆæœ¬
+	//¼ÆËã±ä¶¯³É±¾	
+	int pCus = vR.Ruts[pos - 1],						//¼ÇÂ¼²åÈëµãÖ®Ç°µÄ¿Í»§µã
+		fCus = vR.Ruts[pos];							//¼ÇÂ¼²åÈëµãÖ®ºóµÄ¿Í»§µã
+	float oCost = Dis[pCus][fCus],								//¼ÇÂ¼Â·¾¶Ö®Ç°µÄ³É±¾
+		vCost = Dis[pCus][cus] + Dis[cus][fCus] - oCost;//¼ÇÂ¼±ä¶¯³É±¾
 	return vCost;
 }
 
-//åˆ›å»ºä¸€æ¡æ–°è·¯å¾„
-void CrtNewRut(int cus)
+//´´½¨Ò»ÌõĞÂÂ·¾¶
+void CrtNewRut(int cus, vector<VRut> &preSolution)
 {
 	VRut newVr;
 	newVr.Ruts.push_back(cus);
 	newVr.Ruts.push_back(0);
 	newVr.AtTimes.push_back(e[cus]);
-	newVr.AtTimes.push_back(e[cus]+s[cus]+Dis[cus][0]/V);
+	newVr.AtTimes.push_back(e[cus] + s[cus] + Dis[cus][0] / V);
 	newVr.Loads += q[cus];
 	newVr.Cost = 2 * Dis[0][cus];
-	Solution.push_back(newVr);
+	preSolution.push_back(newVr);
 }
 
-//è®¡ç®—å½“å‰è§£çš„æˆæœ¬
-float sumCost()
+//¼ÆËãµ±Ç°½âµÄ³É±¾
+float sumCost(vector<VRut> &preSolution)
 {
 	float sCost = 0;
-	for (int i = 0; i < (int)Solution.size(); ++i)
-		sCost += Solution[i].Cost;
+	for (int i = 0; i < (int)preSolution.size(); ++i)
+		sCost += preSolution[i].Cost;
 	return sCost;
 }
 
-//é€‰æ‹©å½“å‰è§£ä¸­å®¢æˆ·ç‚¹æœ€å¤šçš„è·¯å¾„
+//Ñ¡Ôñµ±Ç°½âÖĞ¿Í»§µã×î¶àµÄÂ·¾¶
 int ChsMRut()
 {
 	int rutIdx = 0;
 	int maxSize = 0;
 	for (int i = 0; i < (int)Solution.size(); ++i)
 	{
-		if (Solution.size() > maxSize)
+		if ((int)Solution.size() > maxSize)
 		{
 			maxSize = (int)Solution.size();
 			rutIdx = i;
@@ -509,14 +358,14 @@ int ChsMRut()
 	return rutIdx;
 }
 
-//é€‰æ‹©å½“å‰è§£ä¸­å®¢æˆ·ç‚¹æœ€å°‘çš„è·¯å¾„
+//Ñ¡Ôñµ±Ç°½âÖĞ¿Í»§µã×îÉÙµÄÂ·¾¶
 int ChSRut()
 {
 	int rutIdx = 0;
 	int minSize = (int)M;
 	for (int i = 0; i < (int)Solution.size(); ++i)
 	{
-		if (Solution.size() < minSize)
+		if ((int)Solution.size() < minSize)
 		{
 			minSize = (int)Solution.size();
 			rutIdx = i;
@@ -525,35 +374,235 @@ int ChSRut()
 	return rutIdx;
 }
 
-//æ•´æ¡è·¯å¾„ç ´åå’Œä¿®å¤
-void SingleRdel()
+//ÕûÌõÂ·¾¶ÆÆ»µºÍĞŞ¸´
+void SingleRdel(vector<VRut> &resSolution)
 {
-	//é€‰æ‹©å®¢æˆ·ç‚¹æœ€å°‘çš„è·¯å¾„
-	int rIdx = rand()%Solution.size();
+	//Ñ¡Ôñ¿Í»§µã×îÉÙµÄÂ·¾¶
+	int rIdx = rand() % resSolution.size();
 
 	vector<int> cusSet;
-	for (int i = 1; i < (int)Solution[rIdx].Ruts.size() - 1; ++i)
-		cusSet.push_back(Solution[rIdx].Ruts[i]);
-	//æ›´æ–°ç¦å¿Œè¡¨è·¯å¾„ç´¢å¼•
-	for (int i = 0; i < (int)Tabu.size(); ++i)
-	{
-		if (Tabu[i][0] == rIdx)
-			Tabu.erase(Tabu.begin() + i);//åˆ é™¤å¯¹åº”çš„Tabuè®°å½•
-		else if (Tabu[i][0] > rIdx)
-			--Tabu[i][0];				 //é‡åˆ°å¤§äºrIdxçš„è·¯å¾„ç´¢å¼•éœ€è¦è¿›è¡Œé€’å‡
-	}
-	Solution.erase(Solution.begin() + rIdx);
+	for (int i = 1; i < (int)resSolution[rIdx].Ruts.size() - 1; ++i)
+		cusSet.push_back(resSolution[rIdx].Ruts[i]);
+	////¸üĞÂ½û¼É±íÂ·¾¶Ë÷Òı
+	//for (int i = 0; i < (int)Tabu.size(); ++i)
+	//{
+	//	if (Tabu[i][0] == rIdx)
+	//		Tabu.erase(Tabu.begin() + i);//É¾³ı¶ÔÓ¦µÄTabu¼ÇÂ¼
+	//	else if (Tabu[i][0] > rIdx)
+	//		--Tabu[i][0];				 //Óöµ½´óÓÚrIdxµÄÂ·¾¶Ë÷ÒıĞèÒª½øĞĞµİ¼õ
+	//}
+	resSolution.erase(resSolution.begin() + rIdx);
 
-	
+
 	for (int i = 0; i < (int)cusSet.size(); ++i)
-		Insert(cusSet[i]);
+		Insert(cusSet[i], resSolution);
 
-	//åˆ¤æ–­æœ€ä¼˜è§£æˆæœ¬
-	float currCost = sumCost();
+	//ÅĞ¶Ï×îÓÅ½â³É±¾
+	float currCost = sumCost(resSolution);
 	if (currCost < GBestCost)
 	{
 		GBestCost = currCost;
-		cout << currCost << endl;
+		Solution = resSolution;
+		cout << "Single Opt: " << currCost << endl;
 	}
 }
 
+//Ñ¡Ôñ³öµ±Ç°½âÂ·¾¶ÖĞ¿Í»§µãÊıÁ¿´óÓÚ2¸öµÄ¿Í»§µãÊıÁ¿£¬¼´×Ü½ÚµãÊıÁ¿´óÓÚ4¸ö
+vector<int> ChsRutM2()
+{
+	vector<int> rutIdx;
+	int solNum = (int)Solution.size();
+	for (int i = 0; i < solNum; ++i)
+	{
+		if ((int)Solution[i].Ruts.size() >= 4)
+			rutIdx.push_back(i);
+	}
+	return rutIdx;
+}
+
+//¼ÆËãÄ³ÌõÂ·¾¶µÄ³É±¾
+float CalRutCost(const vector<int> &rut)
+{
+	int rSize = (int)rut.size();
+	float rCost = 0;
+	for (int i = 1; i < rSize; ++i)
+		rCost += Dis[rut[i-1]][rut[i]];
+	return rCost;
+}
+
+//¼ÆËãÄ³ÌõÂ·¾¶µÄÔØÖØÁ¿
+float CalRutWgt(const vector<int> &rut)
+{
+	float rWgt = 0;
+	int rSize = (int)rut.size();
+	for (int i = 1; i < rSize-1; ++i)
+		rWgt += q[rut[i]];
+	return rWgt;
+}
+
+//2-opt intra-routeÓÅ»¯£¬Ëæ»úÑ¡ÔñÄ³ÌõÂ·¾¶ÖĞµÄÁ½¸ö¿Í»§µã½øĞĞ»¥»»£¬Ö®ºóÅĞ¶Ï»¥»»Ö®ºóÊ±¼ä´°Ô¼Êø
+vector<VRut> IntraOpt2()
+{
+	vector<VRut> resSolution = Solution;
+
+	vector<int> rutIdx = ChsRutM2();
+	if (!rutIdx.size()) return vector<VRut>();//Ã»ÓĞ¿ÉÒÔ½øĞĞ2 intra-route²Ù×÷µÄÂ·¾¶
+
+	int rIdx = rutIdx[rand() % rutIdx.size()];		//Ñ¡Ôñ³öÓÃÓÚ²Ù×÷µÄÂ·¾¶Ë÷Òı
+	vector<int> tSet;
+	for (int i = 1; i <= (int)resSolution[rIdx].Ruts.size() - 2; ++i)
+		tSet.push_back(i);
+
+	random_device rd;
+	mt19937 engine2(rd());
+	shuffle(tSet.begin(), tSet.end(), engine2);
+
+	int cIdx1 =min(tSet[0],tSet[1]), cIdx2 = max(tSet[0], tSet[1]);	//Ñ¡Ôñ³öÓÃÓÚ»¥»»µÄÁ½¸ö¿Í»§µãµÄË÷Òı
+	int cus1 = resSolution[rIdx].Ruts[cIdx1], cus2 = resSolution[rIdx].Ruts[cIdx2];
+
+	VRut tRut = resSolution[rIdx];
+	tRut.Ruts[cIdx2] = cus1;
+	tRut.Ruts.erase(tRut.Ruts.begin()+cIdx1);
+	int rSize1 = (int)tRut.Ruts.size();
+	tRut.AtTimes.erase(tRut.AtTimes.begin()+cIdx1);
+
+	if (!UpDateTime(cus2, cIdx1, tRut))
+	{
+		/*
+		int rSize2 = (int)tRut.Ruts.size();
+		
+		//ÈôÊ±¼ä´°²»Âú×ãÒªÇóÔò½«Ñ¡³öµÄ¿Í»§µãĞÂ½¨Á½ÌõÂ·¾¶£¬²¢½«ÓÃÓÚ²Ù×÷µÄÂ·¾¶½øĞĞ¸üĞÂ
+		VRut tRut = resSolution[rIdx];
+		if ((int)tRut.Ruts.size() == 4)
+			resSolution.erase(resSolution.begin() + rIdx);//Èô²Ù×÷µÄÂ·¾¶Ö»ÓĞÁ½¸ö¿Í»§µã£¬ÔòÖ±½Ó½«Â·¾¶É¾³ı¼´¿É
+		else
+		{
+			tRut.Ruts.erase(tRut.Ruts.begin() + cIdx2);
+			tRut.AtTimes.erase(tRut.AtTimes.begin() + cIdx2);
+			if (rSize2 > rSize1)
+			{//UpDateTimeÖĞ¸üĞÂÁËÂ·¾¶ĞòÁĞ²ÅĞèÒª½«cIdx1Î»ÖÃµÄ¿Í»§µãÉ¾È¥
+				tRut.Ruts.erase(tRut.Ruts.begin() + cIdx1);
+				tRut.AtTimes.erase(tRut.AtTimes.begin() + cIdx1);
+			}
+			int tCus = tRut.Ruts[1];
+			tRut.Ruts.erase(tRut.Ruts.begin() + 1);
+			tRut.AtTimes.erase(tRut.AtTimes.begin() + 1);
+			UpDateTime(tCus,1,tRut);		
+			tRut.Loads = CalRutWgt(tRut.Ruts);
+			tRut.Cost = CalRutCost(tRut.Ruts);
+			resSolution[rIdx] = tRut;
+
+		}
+		//ĞÂ½¨Â·¾¶
+		CrtNewRut(cus1, resSolution);
+		CrtNewRut(cus2, resSolution);
+		return resSolution;
+		*/
+		resSolution.push_back(VRut(1000*M));
+		return resSolution;
+	}
+		
+	tRut.Cost = CalRutCost(tRut.Ruts);		   //¸üĞÂÂ·¾¶³É±¾
+
+	resSolution[rIdx] = tRut;
+	return resSolution;
+}
+
+//Ä³¸ö½âÖĞÄ³Â·¾¶É¾³ıÒ»¸öµãÖ®ºó²åÈëÁíÍâÒ»¸öµã
+void DelInst(vector<VRut>&resSolution, int rIdx, int cIdx, int instCus)
+{
+	
+	VRut tRut = resSolution[rIdx];
+	int cus = resSolution[rIdx].Ruts[cIdx];
+
+	tRut.Ruts.erase(tRut.Ruts.begin() + cIdx);
+	int rSize1 = (int)tRut.Ruts.size();
+	tRut.AtTimes.erase(tRut.AtTimes.begin() + cIdx);
+	if (!UpDateTime(instCus, cIdx, tRut))
+	{
+		/*
+		int rSize2 = (int)tRut.Ruts.size();
+		if (rSize2 > rSize1)
+		{
+			tRut.Ruts.erase(tRut.Ruts.begin() + cIdx);
+			tRut.AtTimes.erase(tRut.AtTimes.begin() + cIdx);
+		}
+		if (tRut.Ruts.size() == 2)
+			resSolution.erase(resSolution.begin() + rIdx);
+		int tCus = tRut.Ruts[1];
+		tRut.Ruts.erase(tRut.Ruts.begin() + 1);
+		tRut.AtTimes.erase(tRut.AtTimes.begin() + 1);
+		UpDateTime(tCus, 1, tRut);
+		tRut.Loads -= q[cus];
+		tRut.Cost = CalRutCost(tRut.Ruts);
+		resSolution[rIdx] = tRut;
+
+		CrtNewRut(instCus, resSolution);
+		*/
+		resSolution.push_back(VRut(1000 * M));
+		
+	}
+	else
+	{
+		tRut.Loads = tRut.Loads - q[cus] + q[instCus];
+		tRut.Cost = CalRutCost(tRut.Ruts);
+		resSolution[rIdx] = tRut;
+	}
+}
+
+//2-opt inter-routeÓÅ»¯£¬Ëæ»úÑ¡ÔñÄ³Á½ÌõÂ·¾¶ÖĞµÄÁ½¸ö¿Í»§µã½øĞĞ»¥»»£¬Ö®ºóÅĞ¶Ï»¥»»Ö®ºóµÄÊ±¼ä´°ºÍÔØÖØÁ¿Ô¼Êø
+vector<VRut> InterOpt2()
+{
+	vector<VRut> resSolution = Solution;
+	vector<int> tSet;
+	for (int i = 0; i < (int)resSolution.size(); ++i)
+		tSet.push_back(i);
+
+	random_device rd;
+	mt19937 engine2(rd());
+	shuffle(tSet.begin(), tSet.end(), engine2);
+
+	int rIdx1 = tSet[0], rIdx2 = tSet[1];						  //Ñ¡³öÁ½ÌõÂ·¾¶µÄË÷Òı
+
+	int cIdx1 = rand() % (resSolution[rIdx1].Ruts.size() - 2) + 1,//Ñ¡³öÓÃÓÚ½»»»µÄ¿Í»§µãµÄË÷Òı
+		cIdx2 = rand() % (resSolution[rIdx2].Ruts.size() - 2) + 1,
+		cus1 = resSolution[rIdx1].Ruts[cIdx1],
+		cus2 = resSolution[rIdx2].Ruts[cIdx2];
+
+	VRut tRut1 = resSolution[rIdx1],
+		tRut2 = resSolution[rIdx2];
+
+	DelInst(resSolution, rIdx1, cIdx1, cus2);
+	DelInst(resSolution, rIdx2, cIdx2, cus1);
+
+
+	return resSolution;
+}
+
+//1-opt inter-routeÓÅ»¯£¬Ëæ»úÑ¡ÔñÒ»¸ö¿Í»§µã£¬ÔÚµ±Ç°½âËùÓĞµÄÂ·¾¶ÖĞÑ°ÕÒ×îÓÅÎ»ÖÃ½øĞĞ²åÈë£¬Èô²»ÄÜ²åÈë£¬ÔòĞÂ½¨Ò»ÌõÂ·¾¶
+vector<VRut> InterOpt1()
+{
+	vector<VRut> resSolution = Solution;
+
+	//ÈÎÒâÑ¡ÔñÒ»ÌõÂ·¾¶ÖĞµÄÈÎÒâÒ»¸ö¿Í»§µã
+	int cus = ChosOneCus(resSolution);
+	//Ëæ»ú¼ÓÌ°À·ĞŞ¸´
+	return Insert(cus, resSolution);
+}
+
+//Ñ¡ÔñÁÚÓò²Ù×÷Ëã×Ó
+vector<VRut> ChsNbOpt(int i)
+{
+	switch (i)
+	{
+	case 0:
+		return InterOpt1();
+		break;
+	case 1:
+		return InterOpt2();
+		break;
+	case 2:
+		return IntraOpt2();
+		break;
+	}
+}

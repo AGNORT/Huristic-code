@@ -2,40 +2,78 @@
 
 using namespace std;
 
+
 int main()
 {
-	//ç§ä¸€ä¸ªéšæœºç§å­
+	//ÖÖÒ»¸öËæ»úÖÖ×Ó
 	srand(unsigned int(time(NULL)));
 
-	//è¯»å–æ•°æ®
+	//¶ÁÈ¡Êı¾İ
 	ReadData();
-	//æ„å»ºåˆå§‹è§£
+	//¹¹½¨³õÊ¼½â
 	CrtInitSol();
 
-	//TSä¼˜åŒ–
-	int gloTime = 5000,			//å®šä¹‰å…¨å±€ä¼˜åŒ–æ¬¡æ•°
-		locTime = 200;			//å®šä¹‰å±€éƒ¨ä¼˜åŒ–æ¬¡æ•°
-	GBestCost = sumCost();		//è®¡ç®—åˆå§‹è§£ï¼Œåˆå§‹åŒ–æœ€ä¼˜è§£
+	GBestCost = sumCost(Solution);//¼ÇÂ¼³õÊ¼×îÓÅ½â
 
-	for (int i = 0; i < gloTime; ++i)
+	int nbNum = 3,			//ÁÚÓòËã×ÓµÄÊıÁ¿
+		gIteNum = 500,		//¹æ¶¨Íâ²¿µü´ú´ÎÊı
+		lIteNum = 100,		//¹æ¶¨Ã¿¸öÁÚÓò²Ù×÷Ëã×ÓÖ´ĞĞµÄ´ÎÊı
+		i = 0;
+	while (i < gIteNum)
 	{
-		for (int j = 0; j < locTime; ++j)
+		int k = 1;
+		while (k < nbNum)
 		{
-			//ä»»æ„é€‰æ‹©ä¸€æ¡è·¯å¾„ä¸­çš„ä»»æ„ä¸€ä¸ªå®¢æˆ·ç‚¹
-			int cus = ChosOneCus();
-			//éšæœºåŠ è´ªå©ªä¿®å¤
-			Insert(cus);
-
-			float currCost = sumCost();
-			if (currCost < GBestCost)
+			//Ê¹ÓÃµÚkÖĞÁÚÓò²Ù×÷Ëã×ÓÀ´ÓÅ»¯µ±Ç°½â
+			int j = 0;
+			float lOptCost = 1000*M;//¼ÇÂ¼¾Ö²¿×îÓÅ½â
+			while (j < lIteNum)
 			{
-				GBestCost = currCost;
-				cout << currCost << endl;
-			}
-		}
-		//å•æ¡è·¯å¾„ç ´åä¿®å¤
-		SingleRdel();
-	}
+				vector<VRut> resSol = ChsNbOpt(k);
+				float preCost = sumCost(resSol);
+				//int pRatio = rand() % 101;
+				if (preCost < GBestCost)
+				{
+					Solution = resSol;
+					GBestCost = preCost;
+					lOptCost = -1;			//´ËÂÖÎŞĞè¸üĞÂ¾Ö²¿×îÓÅ½â
+					cout << "VNS Opt: " << preCost << endl;
+				}
 
+				if (lOptCost > 0 && preCost < lOptCost)
+					lOptCost = preCost;
+				
+				++j;
+			}
+
+			//ÄÚÑ­»·½áÊøÖ®ºó£¬ÈôÃ»ÓĞ¶Ô½â½øĞĞÓÅ»¯£¬ÔòÖ´ĞĞLS½øĞĞ¾Ö²¿ÓÅ»¯
+			//if (lOptCost > 0 && lOptCost < 1000 * M)
+			//{//Ö´ĞĞLS
+			for (int i = 0; i < lIteNum; ++i)
+			{
+				vector<VRut> tSol = InterOpt1();
+				float tCost = sumCost(tSol);
+				if (tCost < GBestCost)
+				{
+					Solution = tSol;
+					GBestCost = tCost;
+					cout << "LS Opt: " << tCost << endl;
+				}
+			}
+			//}
+			//else		//Èô¶Ô½â½øĞĞÁËÓÅ»¯£¬ÔòÖØĞÂ´ÓÄÇ¸öµÚÒ»¸öÁÚÓò²Ù×÷Ëã×Ó¿ªÊ¼Ö´ĞĞÓÅ»¯
+			//	break;
+			if (lOptCost < 0)
+				k = 0;
+			
+			++k;
+		}
+
+		//ÕûÌõÂ·¾¶½øĞĞÆÆ»µ
+		vector<VRut> tSol = Solution;
+		SingleRdel(tSol);
+
+		++i;
+	}
 	return 0;
 }
