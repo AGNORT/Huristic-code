@@ -4,38 +4,65 @@ using namespace std;
 
 int main()
 {
-	//ç§ä¸€ä¸ªéšæœºç§å­
+	//ÖÖÒ»¸öËæ»úÖÖ×Ó
 	srand(unsigned int(time(NULL)));
 
-	//è¯»å–æ•°æ®
+	//¶ÁÈ¡Êı¾İ
 	ReadData();
-	//æ„å»ºåˆå§‹è§£
-	CrtInitSol();
 
-	//TSä¼˜åŒ–
-	int gloTime = 5000,			//å®šä¹‰å…¨å±€ä¼˜åŒ–æ¬¡æ•°
-		locTime = 200;			//å®šä¹‰å±€éƒ¨ä¼˜åŒ–æ¬¡æ•°
-	GBestCost = sumCost();		//è®¡ç®—åˆå§‹è§£ï¼Œåˆå§‹åŒ–æœ€ä¼˜è§£
+	//ACOÓÅ»¯
+	int gloTime = 5000;		//È«¾ÖÓÅ»¯´ÎÊı
+	int seqTime = 0;		//¼ÇÂ¼Á¬ĞøÃ»ÓĞÓÅ»¯µÄ´ÎÊı
+	InitPherom();			//³õÊ¼»¯ĞÅÏ¢ËØ¾ØÕóºÍÆô·¢Ê½ĞÅÏ¢¾ØÕó
 
 	for (int i = 0; i < gloTime; ++i)
 	{
-		for (int j = 0; j < locTime; ++j)
-		{
-			//ä»»æ„é€‰æ‹©ä¸€æ¡è·¯å¾„ä¸­çš„ä»»æ„ä¸€ä¸ªå®¢æˆ·ç‚¹
-			int cus = ChosOneCus();
-			//éšæœºåŠ è´ªå©ªä¿®å¤
-			Insert(cus);
+		InitAC();				//³õÊ¼»¯ÒÏÈº
+		float locBestCost = M;	//¼ÇÂ¼¾Ö²¿×îÓÅ½â
+		int locBestIdx = -1;	//¼ÇÂ¼¾Ö²¿×îÓÅ½âµÄË÷Òı
+		for (int j = 0; j < antNum; ++j)
+		{//¶ÔÓÚÒÏÈºÖĞÃ¿¸öÂìÒÏ·Ö±ğ¹¹Ôì½â·½°¸
+			ConstructSol(antColn[j]);
 
-			float currCost = sumCost();
-			if (currCost < GBestCost)
-			{
-				GBestCost = currCost;
-				cout << currCost << endl;
+			float preCost = CalCost(antColn[j]);
+			antCost.push_back(preCost);
+			if (preCost < GBestCost)
+			{//¼ÇÂ¼È«¾Ö×îÓÅ½â
+				seqTime = 0;
+				GBestCost = preCost;
+				Solution = antColn[j];
+				cout << "ACO Find better solution : "<< GBestCost << endl;
 			}
+			if (preCost < locBestCost)
+			{//¼ÇÂ¼¾Ö²¿×îÓÅ½â
+				locBestCost = preCost;
+				locBestIdx = j;
+			}
+			++seqTime;
 		}
-		//å•æ¡è·¯å¾„ç ´åä¿®å¤
-		SingleRdel();
+
+		//¸üĞÂĞÅÏ¢ËØ
+		if (seqTime > 500)
+		{//ÈôÁ¬Ğø100´ÎÃ»ÓĞÓÅ»¯£¬ÔòÖØÖÃĞÅÏ¢ËØ
+			phero.clear();
+			InitPherom();
+			seqTime = 0;
+			//¶Ôµ±Ç°×îÓÅ½â½øĞĞLSÓÅ»¯
+			LS_Opt();
+			UpdateBestPherom();
+		}
+		else
+			UpdatePherom(locBestIdx);
+
+
+
+		//Çå¿ÕÉÏ´ÎÓÅ»¯µÃµ½µÄÒÏÈº½â·½°¸
+		antColn.clear();
+		antCost.clear();
+
 	}
+	
+
 
 	return 0;
 }

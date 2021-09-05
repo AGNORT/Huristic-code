@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -5,47 +6,56 @@
 #include <algorithm>
 #include <time.h>
 #include <random>
+#include <iomanip>
 
-#define MAXTABU 5		//è®¾ç½®æœ€å¤§ç¦å¿Œæ­¥é•¿
+
+#define MAXTABU 5		//ÉèÖÃ×î´ó½û¼É²½³¤
 
 extern std::ofstream outPf;
 
-/*********************************å‚æ•°å®šä¹‰****************************************/
-extern int cusNum;			//å®¢æˆ·ç‚¹æ•°ç›®
-extern int pointNum;		//æ‰€æœ‰èŠ‚ç‚¹çš„æ•°ç›®
-extern int carNum;			//å¡è½¦æ•°ç›®
-extern float Q;			//å¡è½¦é¢å®šè½½é‡é‡
-extern float alpha;		//å¡è½¦å®è½½ç‡
-extern float C;			//å¡è½¦è¡Œé©¶çš„å˜åŠ¨æˆæœ¬
-extern float V;			//å¡è½¦è¡Œé©¶çš„é€Ÿåº¦
-extern float M;			//ä¸€ä¸ªè¶³å¤Ÿå¤§çš„å¸¸æ•°
-extern float tau;			//æƒ©ç½šæˆæœ¬ç³»æ•°
+/*********************************²ÎÊı¶¨Òå****************************************/
+extern int cusNum;			//¿Í»§µãÊıÄ¿
+extern int pointNum;		//ËùÓĞ½ÚµãµÄÊıÄ¿
+extern int carNum;			//¿¨³µÊıÄ¿
+extern float Q;			//¿¨³µ¶î¶¨ÔØÖØÁ¿
+extern float altra;		//¿¨³µÊµÔØÂÊ
+extern float C;			//¿¨³µĞĞÊ»µÄ±ä¶¯³É±¾
+extern float V;			//¿¨³µĞĞÊ»µÄËÙ¶È
+extern float M;			//Ò»¸ö×ã¹»´óµÄ³£Êı
+extern float tau;			//³Í·£³É±¾ÏµÊı
 
-/**********************************é›†åˆå®šä¹‰***************************************/
-extern std::vector<float> q;				//å®¢æˆ·ç‚¹çš„éœ€æ±‚é‡
-extern std::vector<float> s;				//å®¢æˆ·ç‚¹çš„æœåŠ¡æ—¶é—´
-extern std::vector<float> e;				//å®¢æˆ·ç‚¹çš„æ—©æ—¶é—´çª—
-extern std::vector<float> l;				//å®¢æˆ·ç‚¹çš„æ™šæ—¶é—´çª—
-extern std::vector<std::vector<float>> Dis;		//å®¢æˆ·ç‚¹ä¹‹é—´çš„è·ç¦»çŸ©é˜µ
+/**********************************¼¯ºÏ¶¨Òå***************************************/
+extern std::vector<float> q;				//¿Í»§µãµÄĞèÇóÁ¿
+extern std::vector<float> s;				//¿Í»§µãµÄ·şÎñÊ±¼ä
+extern std::vector<float> e;				//¿Í»§µãµÄÔçÊ±¼ä´°
+extern std::vector<float> l;				//¿Í»§µãµÄÍíÊ±¼ä´°
+extern std::vector<std::vector<float>> Dis;		//¿Í»§µãÖ®¼äµÄ¾àÀë¾ØÕó
 
-/******************************TSç›¸å…³å®šä¹‰************************************/
-extern std::vector<std::vector<int>> Tabu;	//è®¾ç½®ç¦å¿Œè¡¨<è·¯å¾„ç´¢å¼•ï¼Œå®¢æˆ·ç‚¹ç¼–å·>ä¸å…è®¸æŸä¸ªå®¢æˆ·ç‚¹è¢«æ’å…¥åˆ°æŸæ¡è·¯å¾„ä¸­ï¼Œé˜²æ­¢é‡å¤æœç´¢
+/*******************************ACOÏà¹Ø¶¨Òå*************************************/
+extern int antNum;						//Ã¿¸öÒÏÈºÖĞÂìÒÏµÄ¸öÊı
+extern float alpha;						//¸ÅÂÊÑ¡Ôñº¯Êı²ÎÊıalpha
+extern float beta;						//¸ÅÂÊÑ¡Ôñº¯Êı²ÎÊıbeta
+extern float rho;						//ĞÅÏ¢ËØÏûÊ§ËÙÂÊrho
+extern float bestE;						//¾Ö²¿×îÓÅÂ·¾¶µÄĞÅÏ¢ËØ¸üĞÂÈ¨ÖØ
+extern std::vector<float> antCost;		//¼ÇÂ¼ÒÏÈºÖĞÃ¿¸öÂìÒÏµÄ³É±¾
+extern std::vector<std::vector<float>> phero;		//ĞÅÏ¢ËØ¾ØÕó
+extern std::vector<std::vector<float>> eta;			//Æô·¢Ê½ĞÅÏ¢¾ØÕó
 
-extern float GBestCost;						//è®°å½•å…¨å±€æœ€ä¼˜è§£
+extern float GBestCost;						//¼ÇÂ¼È«¾Ö×îÓÅ½â
 
 
-/*æœ€ä¼˜è§£ç›¸å…³å®šä¹‰*/
-//ä¸€æ¡è½¦è¾†è·¯å¾„
+/*×îÓÅ½âÏà¹Ø¶¨Òå*/
+//Ò»Ìõ³µÁ¾Â·¾¶
 class VRut
 {
 public:
-	std::vector<int> Ruts;			//å½“å‰æœ€ä¼˜è·¯å¾„
-	std::vector<float> AtTimes;		//å½“å‰æœ€ä¼˜è·¯å¾„å¯¹åº”çš„è½¦è¾†å‡ºå‘æ—¶é—´
-	float Loads;					//è½¦è¾†çš„è½½é‡é‡
-	float Cost;						//è½¦è¾†è·¯å¾„çš„æˆæœ¬
-	//float RTimes;					//å‰©ä½™ç­‰å¾…æ—¶é—´é›†åˆ ä¸è€ƒè™‘ç­‰å¾…æ—¶é—´æˆæœ¬
+	std::vector<int> Ruts;			//µ±Ç°×îÓÅÂ·¾¶
+	std::vector<float> AtTimes;		//µ±Ç°×îÓÅÂ·¾¶¶ÔÓ¦µÄ³µÁ¾³ö·¢Ê±¼ä
+	float Loads;					//³µÁ¾µÄÔØÖØÁ¿
+	float Cost;						//³µÁ¾Â·¾¶µÄ³É±¾
+	//float RTimes;					//Ê£ÓàµÈ´ıÊ±¼ä¼¯ºÏ ²»¿¼ÂÇµÈ´ıÊ±¼ä³É±¾
 	VRut()
-	{//åˆå§‹åŒ–è·¯å¾„
+	{//³õÊ¼»¯Â·¾¶
 		Ruts.push_back(0);
 		AtTimes.push_back(0);
 		Loads = 0;
@@ -53,37 +63,30 @@ public:
 	}
 };
 extern std::vector<VRut> Solution;
+extern std::vector<std::vector<VRut>> antColn;	//ÒÏÈº
 
-/**********************************å‡½æ•°å£°æ˜***************************************/
-//è¯»å–æ•°æ®
+
+/**********************************º¯ÊıÉùÃ÷***************************************/
+//¶ÁÈ¡Êı¾İ
 void ReadData();
 
-//åˆ›å»ºåˆå§‹è§£
-void CrtInitSol();
+//³õÊ¼»¯ĞÅÏ¢ËØ¾ØÕó
+void InitPherom();
 
-//åˆ¤æ–­è½¦è¾†èƒ½å¦è¿”å›åœºç«™
-bool BackToDpt(VRut &vR, int &j);
+//³õÊ¼»¯ÒÏÈºÎ»ÖÃ
+void InitAC();
 
-//å°†æŸä¸€ä¸ªå®¢æˆ·ç‚¹æ’å…¥åˆ°æŸä¸€æ¡è·¯å¾„ä¸­çš„æŸä¸€ä¸ªä½ç½®ï¼Œåˆ¤æ–­è·¯å¾„å¯è¡Œæ€§
-bool JgeRutValy(int cus, int pos, VRut & vR);
+//ÎªÃ¿Ò»¸öÂìÒÏ¹¹½¨½â·½°¸
+void ConstructSol(std::vector<VRut> & preAnt);
 
-//å°†æŸä¸€ä¸ªå®¢æˆ·ç‚¹æ’å…¥åˆ°æŸä¸€æ¡è·¯å¾„ä¸­çš„æŸä¸€ä¸ªä½ç½®ï¼Œæ›´æ–°æ’å…¥ç‚¹ä¹‹åçš„å®¢æˆ·ç‚¹çš„åˆ°è¾¾æ—¶é—´ï¼Œå¹¶åˆ¤æ–­è·¯å¾„å¯è¡Œæ€§
-bool UpDateTime(int cus, int pos, VRut & vR);
+//¼ÆËãÃ¿Ò»¸öÂìÒÏµÄ³É±¾
+float CalCost(std::vector<VRut> preAnt);
 
-//ä»»æ„é€‰æ‹©ä¸€æ¡è·¯å¾„ä¸­çš„ä»»æ„ä¸€ä¸ªå®¢æˆ·ç‚¹
-int ChosOneCus();
+//¸üĞÂĞÅÏ¢ËØĞÅÏ¢
+void UpdatePherom(int locBIdx);
 
-//éšæœºåŠ è´ªå©ªæ’å…¥ä¿®å¤
-void Insert(int cus);
+//¸üĞÂ×îÓÅ½âĞÅÏ¢ËØĞÅÏ¢
+void UpdateBestPherom();
 
-//è®¡ç®—å°†å®¢æˆ·ç‚¹æ’å…¥åˆ°æŸæ¡è·¯å¾„çš„æŸä¸ªä½ç½®çš„å˜åŠ¨æˆæœ¬
-float CalCost(int cus, int pos, VRut &vR);
-
-//åˆ›å»ºä¸€æ¡æ–°è·¯å¾„
-void CrtNewRut(int cus);
-
-//è®¡ç®—å½“å‰è§£çš„æˆæœ¬
-float sumCost();
-
-//æ•´æ¡è·¯å¾„ç ´åå’Œä¿®å¤
-void SingleRdel();
+//LSÓÅ»¯
+void LS_Opt();
