@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -6,84 +7,98 @@
 #include <time.h>
 #include <random>
 
-#define MAXTABU 5		//è®¾ç½®æœ€å¤§ç¦å¿Œæ­¥é•¿
-
 extern std::ofstream outPf;
 
-/*********************************å‚æ•°å®šä¹‰****************************************/
-extern int cusNum;			//å®¢æˆ·ç‚¹æ•°ç›®
-extern int pointNum;		//æ‰€æœ‰èŠ‚ç‚¹çš„æ•°ç›®
-extern int carNum;			//å¡è½¦æ•°ç›®
-extern float Q;			//å¡è½¦é¢å®šè½½é‡é‡
-extern float alpha;		//å¡è½¦å®è½½ç‡
-extern float C;			//å¡è½¦è¡Œé©¶çš„å˜åŠ¨æˆæœ¬
-extern float V;			//å¡è½¦è¡Œé©¶çš„é€Ÿåº¦
-extern float M;			//ä¸€ä¸ªè¶³å¤Ÿå¤§çš„å¸¸æ•°
-extern float tau;			//æƒ©ç½šæˆæœ¬ç³»æ•°
+/*********************************²ÎÊı¶¨Òå****************************************/
+extern int cusNum;			//¿Í»§µãÊıÄ¿
+extern int pointNum;		//ËùÓĞ½ÚµãµÄÊıÄ¿
+extern int carNum;			//¿¨³µÊıÄ¿
+extern float Q;			//¿¨³µ¶î¶¨ÔØÖØÁ¿
+extern float alpha;		//¿¨³µÊµÔØÂÊ
+extern float C;			//¿¨³µĞĞÊ»µÄ±ä¶¯³É±¾
+extern float V;			//¿¨³µĞĞÊ»µÄËÙ¶È
+extern float M;			//Ò»¸ö×ã¹»´óµÄ³£Êı
+extern float tau;			//³Í·£³É±¾ÏµÊı
 
-/**********************************é›†åˆå®šä¹‰***************************************/
-extern std::vector<float> q;				//å®¢æˆ·ç‚¹çš„éœ€æ±‚é‡
-extern std::vector<float> s;				//å®¢æˆ·ç‚¹çš„æœåŠ¡æ—¶é—´
-extern std::vector<float> e;				//å®¢æˆ·ç‚¹çš„æ—©æ—¶é—´çª—
-extern std::vector<float> l;				//å®¢æˆ·ç‚¹çš„æ™šæ—¶é—´çª—
-extern std::vector<std::vector<float>> Dis;		//å®¢æˆ·ç‚¹ä¹‹é—´çš„è·ç¦»çŸ©é˜µ
+/**********************************¼¯ºÏ¶¨Òå***************************************/
+extern std::vector<float> q;				//¿Í»§µãµÄĞèÇóÁ¿
+extern std::vector<float> s;				//¿Í»§µãµÄ·şÎñÊ±¼ä
+extern std::vector<float> e;				//¿Í»§µãµÄÔçÊ±¼ä´°
+extern std::vector<float> l;				//¿Í»§µãµÄÍíÊ±¼ä´°
+extern std::vector<std::vector<float>> Dis;		//¿Í»§µãÖ®¼äµÄ¾àÀë¾ØÕó
 
-/******************************TSç›¸å…³å®šä¹‰************************************/
-extern std::vector<std::vector<int>> Tabu;	//è®¾ç½®ç¦å¿Œè¡¨<è·¯å¾„ç´¢å¼•ï¼Œå®¢æˆ·ç‚¹ç¼–å·>ä¸å…è®¸æŸä¸ªå®¢æˆ·ç‚¹è¢«æ’å…¥åˆ°æŸæ¡è·¯å¾„ä¸­ï¼Œé˜²æ­¢é‡å¤æœç´¢
+/******************************TSÏà¹Ø¶¨Òå************************************/
+//extern std::vector<std::vector<int>> Tabu;	//ÉèÖÃ½û¼É±í<Â·¾¶Ë÷Òı£¬¿Í»§µã±àºÅ>²»ÔÊĞíÄ³¸ö¿Í»§µã±»²åÈëµ½Ä³ÌõÂ·¾¶ÖĞ£¬·ÀÖ¹ÖØ¸´ËÑË÷
 
-extern float GBestCost;						//è®°å½•å…¨å±€æœ€ä¼˜è§£
+extern float GBestCost;						//¼ÇÂ¼È«¾Ö×îÓÅ½â
 
 
-/*æœ€ä¼˜è§£ç›¸å…³å®šä¹‰*/
-//ä¸€æ¡è½¦è¾†è·¯å¾„
+/*×îÓÅ½âÏà¹Ø¶¨Òå*/
+//Ò»Ìõ³µÁ¾Â·¾¶
 class VRut
 {
 public:
-	std::vector<int> Ruts;			//å½“å‰æœ€ä¼˜è·¯å¾„
-	std::vector<float> AtTimes;		//å½“å‰æœ€ä¼˜è·¯å¾„å¯¹åº”çš„è½¦è¾†å‡ºå‘æ—¶é—´
-	float Loads;					//è½¦è¾†çš„è½½é‡é‡
-	float Cost;						//è½¦è¾†è·¯å¾„çš„æˆæœ¬
-	//float RTimes;					//å‰©ä½™ç­‰å¾…æ—¶é—´é›†åˆ ä¸è€ƒè™‘ç­‰å¾…æ—¶é—´æˆæœ¬
+	std::vector<int> Ruts;			//µ±Ç°×îÓÅÂ·¾¶
+	std::vector<float> AtTimes;		//µ±Ç°×îÓÅÂ·¾¶¶ÔÓ¦µÄ³µÁ¾³ö·¢Ê±¼ä
+	float Loads;					//³µÁ¾µÄÔØÖØÁ¿
+	float Cost;						//³µÁ¾Â·¾¶µÄ³É±¾
+	//float RTimes;					//Ê£ÓàµÈ´ıÊ±¼ä¼¯ºÏ ²»¿¼ÂÇµÈ´ıÊ±¼ä³É±¾
 	VRut()
-	{//åˆå§‹åŒ–è·¯å¾„
+	{//³õÊ¼»¯Â·¾¶
 		Ruts.push_back(0);
 		AtTimes.push_back(0);
 		Loads = 0;
 		Cost = 0;
 	}
+	VRut(float C)
+	{
+		Cost = C;
+	}
 };
 extern std::vector<VRut> Solution;
 
-/**********************************å‡½æ•°å£°æ˜***************************************/
-//è¯»å–æ•°æ®
+/**********************************º¯ÊıÉùÃ÷***************************************/
+//¶ÁÈ¡Êı¾İ
 void ReadData();
 
-//åˆ›å»ºåˆå§‹è§£
+//´´½¨³õÊ¼½â
 void CrtInitSol();
 
-//åˆ¤æ–­è½¦è¾†èƒ½å¦è¿”å›åœºç«™
+//ÅĞ¶Ï³µÁ¾ÄÜ·ñ·µ»Ø³¡Õ¾
 bool BackToDpt(VRut &vR, int &j);
 
-//å°†æŸä¸€ä¸ªå®¢æˆ·ç‚¹æ’å…¥åˆ°æŸä¸€æ¡è·¯å¾„ä¸­çš„æŸä¸€ä¸ªä½ç½®ï¼Œåˆ¤æ–­è·¯å¾„å¯è¡Œæ€§
+//½«Ä³Ò»¸ö¿Í»§µã²åÈëµ½Ä³Ò»ÌõÂ·¾¶ÖĞµÄÄ³Ò»¸öÎ»ÖÃ£¬ÅĞ¶ÏÂ·¾¶¿ÉĞĞĞÔ
 bool JgeRutValy(int cus, int pos, VRut & vR);
 
-//å°†æŸä¸€ä¸ªå®¢æˆ·ç‚¹æ’å…¥åˆ°æŸä¸€æ¡è·¯å¾„ä¸­çš„æŸä¸€ä¸ªä½ç½®ï¼Œæ›´æ–°æ’å…¥ç‚¹ä¹‹åçš„å®¢æˆ·ç‚¹çš„åˆ°è¾¾æ—¶é—´ï¼Œå¹¶åˆ¤æ–­è·¯å¾„å¯è¡Œæ€§
+//½«Ä³Ò»¸ö¿Í»§µã²åÈëµ½Ä³Ò»ÌõÂ·¾¶ÖĞµÄÄ³Ò»¸öÎ»ÖÃ£¬¸üĞÂ²åÈëµãÖ®ºóµÄ¿Í»§µãµÄµ½´ïÊ±¼ä£¬²¢ÅĞ¶ÏÂ·¾¶¿ÉĞĞĞÔ
 bool UpDateTime(int cus, int pos, VRut & vR);
 
-//ä»»æ„é€‰æ‹©ä¸€æ¡è·¯å¾„ä¸­çš„ä»»æ„ä¸€ä¸ªå®¢æˆ·ç‚¹
-int ChosOneCus();
+//ÈÎÒâÑ¡ÔñÒ»ÌõÂ·¾¶ÖĞµÄÈÎÒâÒ»¸ö¿Í»§µã
+int ChosOneCus(std::vector<VRut> &resSolution);
 
-//éšæœºåŠ è´ªå©ªæ’å…¥ä¿®å¤
-void Insert(int cus);
+//Ëæ»ú¼ÓÌ°À·²åÈëĞŞ¸´
+std::vector<VRut> Insert(int cus, std::vector<VRut> &resSolution);
 
-//è®¡ç®—å°†å®¢æˆ·ç‚¹æ’å…¥åˆ°æŸæ¡è·¯å¾„çš„æŸä¸ªä½ç½®çš„å˜åŠ¨æˆæœ¬
+//¼ÆËã½«¿Í»§µã²åÈëµ½Ä³ÌõÂ·¾¶µÄÄ³¸öÎ»ÖÃµÄ±ä¶¯³É±¾
 float CalCost(int cus, int pos, VRut &vR);
 
-//åˆ›å»ºä¸€æ¡æ–°è·¯å¾„
-void CrtNewRut(int cus);
+//´´½¨Ò»ÌõĞÂÂ·¾¶
+void CrtNewRut(int cus, std::vector<VRut> &preSolution);
 
-//è®¡ç®—å½“å‰è§£çš„æˆæœ¬
-float sumCost();
+//¼ÆËãµ±Ç°½âµÄ³É±¾
+float sumCost(std::vector<VRut> &preSolution);
 
-//æ•´æ¡è·¯å¾„ç ´åå’Œä¿®å¤
-void SingleRdel();
+//ÕûÌõÂ·¾¶ÆÆ»µºÍĞŞ¸´
+void SingleRdel(std::vector<VRut> &resSolution);
+
+//2-opt intra-routeÓÅ»¯£¬Ëæ»úÑ¡ÔñÄ³ÌõÂ·¾¶ÖĞµÄÁ½¸ö¿Í»§µã½øĞĞ»¥»»£¬Ö®ºóÅĞ¶Ï»¥»»Ö®ºóÊ±¼ä´°Ô¼Êø
+std::vector<VRut> IntraOpt2();
+
+//1-opt inter-routeÓÅ»¯£¬Ëæ»úÑ¡ÔñÒ»¸ö¿Í»§µã£¬ÔÚµ±Ç°½âËùÓĞµÄÂ·¾¶ÖĞÑ°ÕÒ×îÓÅÎ»ÖÃ½øĞĞ²åÈë£¬Èô²»ÄÜ²åÈë£¬ÔòĞÂ½¨Ò»ÌõÂ·¾¶
+std::vector<VRut> InterOpt1();
+
+//2-opt inter-routeÓÅ»¯£¬Ëæ»úÑ¡ÔñÄ³Á½ÌõÂ·¾¶ÖĞµÄÁ½¸ö¿Í»§µã½øĞĞ»¥»»£¬Ö®ºóÅĞ¶Ï»¥»»Ö®ºóµÄÊ±¼ä´°ºÍÔØÖØÁ¿Ô¼Êø
+std::vector<VRut> InterOpt2();
+
+//Ñ¡ÔñÁÚÓò²Ù×÷Ëã×Ó
+std::vector<VRut> ChsNbOpt(int i);
